@@ -1,0 +1,454 @@
+author: "Daan Leijen"
+fileTypes: [
+  "mdk"
+  "md"
+  "madoko"
+  "markdown"
+]
+firstLineMatch: "\\s*(?i:(Title|Author|Description|License|Copyright|Documentation))\\s*:"
+foldingStartMarker: "^(~+)\\w+\\b.*$"
+foldingStopMarker: "^\\1\\s*$"
+name: "Madoko"
+patterns: [
+  {
+    include: "#metadata"
+  }
+  {
+    begin: "\\n\\n(    |\\t)"
+    contentName: "string source.embedded"
+    end: "^(?!(    |\\t))"
+  }
+  {
+    begin: "\\n\\n(    |\\t)"
+    contentName: "string source.embedded"
+    end: "^(?!(    |\\t))"
+  }
+  {
+    match: "^\\s*#+\\s[^{]+"
+    name: "keyword markup.heading.madoko"
+  }
+  {
+    match: "^\\s*(===+|---+)\\s*$"
+    name: "keyword markup.heading.madoko"
+  }
+  {
+    begin: "^\\s*\\[(\\^[^\\]]+)\\]\\s*:"
+    beginCaptures:
+      "1":
+        name: "constant.numeric.madoko"
+    end: "^(?!(    |\\t))"
+    patterns: [
+      {
+        include: "#embedded"
+      }
+    ]
+  }
+  {
+    captures:
+      "1":
+        name: "constant.numeric.madoko"
+      "2":
+        name: "comment meta.tag.preprocessor.xml"
+    match: "^\\s*\\[([^\\]]+)\\]\\s*:(.*$)"
+  }
+  {
+    begin: "^(?=<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del|style)\\b)(?!.*?</\\1>)"
+    end: ""
+    patterns: [
+      {
+        include: "text.html.basic"
+      }
+    ]
+  }
+  {
+    begin: "^(?=<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del|style)\\b)"
+    end: "$\\n?"
+    patterns: [
+      {
+        include: "text.html.basic"
+      }
+    ]
+  }
+  {
+    include: "#embedded"
+  }
+]
+repository:
+  embedded:
+    patterns: [
+      {
+        begin: "^\\s*(?:\\|\\s*|\\+)[\\-=~:]*"
+        beginCaptures:
+          "0":
+            name: "keyword"
+        end: "^(?!\\s*(\\|\\s*|\\+))"
+        patterns: [
+          {
+            match: "[-=~:]*(\\| *|\\+)[-=~:]*"
+            name: "keyword"
+          }
+          {
+            include: "#inline"
+          }
+        ]
+      }
+      {
+        match: "^\\s*[\\*_\\-](?:\\s*[\\*_\\-]){2,}"
+        name: "keyword markup.heading.madoko"
+      }
+      {
+        begin: "^(\\s*)([\\*\\+\\-]|\\d+\\.)\\s"
+        beginCaptures:
+          "0":
+            name: "keyword markup.heading.madoko"
+        end: "^[ ]{0,3}(?!([ \\t]|$))"
+        patterns: [
+          {
+            include: "#embedded"
+          }
+        ]
+      }
+      {
+        match: "^\\s*([\\*\\+\\-]|\\d+\\.)\\s"
+        name: "keyword markup.heading.madoko"
+      }
+      {
+        match: "^\\s*\\[\\s*(BIB|INCLUDE|TOC|FOOTNOTES|TITLE)\\s*(=\\s*)?[^\\]]*\\]\\s*$"
+        name: "keyword markup.heading.madoko"
+      }
+      {
+        begin: "^[ \\t]*>[ \\t]"
+        contentName: "markup.quote.madoko"
+        end: "^[ \\t]*$"
+        patterns: [
+          {
+            include: "#embedded"
+          }
+        ]
+      }
+      {
+        begin: "^\\s*(~+)\\s*(?i:(Begin)\\s+)?(?i:(Snippet|Equation|TexRaw|TeX|MathDefs|Graph))\\b(.*)(\\n|$)"
+        beginCaptures:
+          "1":
+            name: "entity.name.class markup.block.madoko"
+          "2":
+            name: "entity.name.class markup.block.madoko"
+          "3":
+            name: "entity.name.class markup.block.madoko"
+          "4":
+            name: "comment meta.tag.preprocessor.xml"
+        contentName: "source.embedded.latex"
+        end: "^[ \\t]*\\1\\s*(?i:End[ \\t]+\\3)?\\s*$"
+        endCaptures:
+          "0":
+            name: "entity.name.class markup.block.madoko"
+        patterns: [
+          {
+            include: "text.tex.latex"
+          }
+        ]
+      }
+      {
+        match: "^\\s*~+[^{]+"
+        name: "entity.name.class markup.block.madoko"
+      }
+      {
+        begin: "^\\s*(`{3,}\\s*javascript)\\b\\s*(.*)(\\n|$)"
+        beginCaptures:
+          "1":
+            name: "entity.name.class markup.block.madoko"
+          "2":
+            name: "comment meta.tag.preprocessor.xml"
+        contentName: "source.embedded.javascript"
+        end: "^\\s*(`{3,})\\s*"
+        endCaptures:
+          "0":
+            name: "entity.name.class markup.block.madoko"
+        patterns: [
+          {
+            include: "source.js"
+          }
+        ]
+      }
+      {
+        begin: "^\\s*(`{3,}\\s*koka)\\b\\s*(.*)(\\n|$)"
+        beginCaptures:
+          "1":
+            name: "entity.name.class markup.block.madoko"
+          "2":
+            name: "comment meta.tag.preprocessor.xml"
+        contentName: "source.embedded.koka"
+        end: "^\\s*(`{3,})\\s*"
+        endCaptures:
+          "0":
+            name: "entity.name.class markup.block.madoko"
+        patterns: [
+          {
+            include: "source.koka"
+          }
+        ]
+      }
+      {
+        begin: "^\\s*((`{3,})\\s*(\\w+)?)(\\s*.*)(\\n|$)"
+        beginCaptures:
+          "1":
+            name: "entity.name.class markup.block.madoko"
+          "4":
+            name: "comment meta.tag.preprocessor.xml"
+        contentName: "string source.embedded"
+        end: "^\\s*(`{3,})\\s*"
+        endCaptures:
+          "0":
+            name: "entity.name.class markup.block.madoko"
+        patterns: []
+      }
+      {
+        begin: "^ {0,3}<!--(?!.*?-->)"
+        beginCaptures:
+          "0":
+            name: "comment"
+        contentName: "comment"
+        end: "^.*?-->\\s*$\\n?"
+        endCaptures:
+          "0":
+            name: "comment"
+      }
+      {
+        include: "#inline"
+      }
+    ]
+  inline:
+    patterns: [
+      {
+        captures:
+          "1":
+            name: "constant.numeric.madoko"
+          "2":
+            name: "comment meta.tag.preprocessor.xml"
+        match: "\\[(\\^?[\\w\\-\\.:]+)\\](?!\\s*[\\[(])(\\{(?:[^\\\\}]|\\\\.)+\\})?"
+      }
+      {
+        match: "#[\\w\\-\\.:]+"
+        name: "constant.numeric.madoko"
+      }
+      {
+        captures:
+          "1":
+            name: "constant.numeric.madoko"
+          "2":
+            name: "string.madoko"
+          "3":
+            name: "comment meta.tag.preprocessor.xml"
+        match: "\\]\\(\\s*<?([^\\s>)]*)>?(?:\\s+['\"](.*?)['\"])?\\s*\\)(\\{(?:[^\\\\}]|\\\\.)+\\})?"
+      }
+      {
+        match: "\\*((?:[^\\\\*]|\\\\.)+)\\*|\\b_((?:[^\\\\_]|\\\\.)+)_\\b"
+        name: "variable.parameter markup.italic"
+      }
+      {
+        match: "__((?:[^\\\\]|\\\\.)+?)__(?!_)|\\*\\*((?:[^\\\\]|\\\\.)+?)\\*\\*(?!\\*)"
+        name: "variable.parameter markup.bold"
+      }
+      {
+        captures:
+          "2":
+            name: "string source.embedded"
+        match: "(`+)((?:[^`]|(?!\\1)`)*)\\1"
+      }
+      {
+        match: "~([^\\s\\\\]|\\\\.)+~|\\^([^\\s\\\\]|\\\\.)+\\^"
+        name: "string.escape.madoko"
+      }
+      {
+        captures:
+          "1":
+            name: "entity.name.tag"
+          "2":
+            name: "source.embedded"
+          "3":
+            name: "entity.name.tag"
+        match: "(<code\\b(?:\"[^\"]*\"|'[^']*'|[^'\">])*?>)([\\s\\S]*?)(</code>)"
+      }
+      {
+        match: "<!--[\\s\\S]*?-->"
+        name: "comment"
+      }
+      {
+        match: "<(?:/?\\w+\\b(?:\"[^\"]*\"|'[^']*'|[^'\">])*?>)"
+        name: "entity.name.tag"
+      }
+      {
+        captures:
+          "1":
+            name: "string.escape.madoko"
+        match: "\\{(?:[^\\\\}]|(\\\\[.\\n]))+\\}(?=\\s*$)"
+        name: "comment meta.tag.preprocessor.xml"
+      }
+      {
+        match: "\\\\([^a-zA-Z0-9])"
+        name: "string.escape.madoko"
+      }
+      {
+        match: "&(#(\\d+|x[\\da-fA-F]+)|\\w+);"
+        name: "string.escape.madoko"
+      }
+      {
+        match: "(---?|\\.\\.\\.|<<|>>)"
+        name: "string.escape.madoko"
+      }
+      {
+        begin: "\\$\\$"
+        contentName: "source.embedded.latex"
+        end: "\\$\\$"
+        patterns: [
+          {
+            include: "text.tex.latex"
+          }
+        ]
+      }
+      {
+        begin: "\\$(?=.*\\$)"
+        contentName: "source.embedded.latex"
+        end: "\\$|$"
+        patterns: [
+          {
+            include: "text.tex.latex"
+          }
+        ]
+      }
+      {
+        match: "  $"
+        name: "source.embedded"
+      }
+    ]
+  metadata:
+    begin: "^(Title|Author|Description|License|Copyright|Package|Documentation)\\s*:"
+    beginCaptures:
+      "0":
+        name: "entity.name.function meta.tag.preprocessor.madoko"
+    end: "^(?!\\s)(?!@([\\w\\-]+)|[\\w\\.#~][\\w\\-\\.#~, \\t\\*]*[:\\{]|<!--)"
+    name: "markup.metadata.madoko"
+    patterns: [
+      {
+        begin: "^(?i:HTML Header)\\s*:"
+        beginCaptures:
+          "0":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+        contentName: "source.embedded.html"
+        end: "^(?![ \\t])"
+        patterns: [
+          {
+            include: "text.html.basic"
+          }
+        ]
+      }
+      {
+        begin: "^(?i:Tex Header\\*?)\\s*:"
+        beginCaptures:
+          "0":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+        contentName: "source.embedded.latex"
+        end: "^(?![ \\t])"
+        patterns: [
+          {
+            include: "text.tex.latex"
+          }
+        ]
+      }
+      {
+        begin: "^(?i:Description|Comment)\\s*:"
+        beginCaptures:
+          "0":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+        contentName: "source.embedded.madoko"
+        end: "^(?![ \\t])"
+        patterns: [
+          {
+            include: "#embedded"
+          }
+        ]
+      }
+      {
+        begin: "^(@(?:[\\w\\-]+)\\s+)?(([\\.~#][\\w\\-\\.#~,\\s]*):)"
+        beginCaptures:
+          "1":
+            name: "keyword"
+          "2":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+        end: "^(?![ \\t])"
+        patterns: [
+          {
+            match: "([^\\\\]|\\\\.)*"
+            name: "comment meta.tag.preprocessor.xml"
+          }
+          {
+            match: "\\\\\\n"
+            name: "string.escape.madoko"
+          }
+        ]
+      }
+      {
+        captures:
+          "1":
+            name: "keyword"
+          "2":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+        match: "^(@(?:[\\w\\-]+)\\s+)?(\\w[\\w\\-\\.#~,\\s\\*]*:)"
+      }
+      {
+        captures:
+          "1":
+            name: "keyword"
+          "2":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+          "3":
+            name: "comment meta.tag.preprocessor.xml"
+        match: "^(@(?:[\\w\\-]+)\\s+)?([\\w\\.#~][\\w\\-\\.#~,\\s\\*]*)(\\{.*\\})\\s*"
+      }
+      {
+        begin: "^(@(?:[\\w\\-]+)\\s+)?([\\w\\.#~][\\w\\-\\.#~,\\s\\*]*)(\\{)"
+        beginCaptures:
+          "1":
+            name: "keyword"
+          "2":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+          "3":
+            name: "comment meta.tag.preprocessor.xml"
+        contentName: "comment meta.tag.preprocessor.xml"
+        end: "^\\}[ \t]*$"
+        endCaptures:
+          "0":
+            name: "comment meta.tag.preprocessor.xml"
+      }
+      {
+        begin: "^(@(?:if|supports)\\b)(.*)(\\{)"
+        beginCaptures:
+          "1":
+            name: "keyword"
+          "2":
+            name: "entity.name.function meta.tag.preprocessor.madoko"
+          "3":
+            name: "comment meta.tag.preprocessor.xml"
+        contentName: "comment meta.tag.preprocessor.xml"
+        end: "^\\}[ \t]*$"
+        endCaptures:
+          "0":
+            name: "comment meta.tag.preprocessor.xml"
+      }
+      {
+        begin: "^ {0,3}<!--(?!.*?-->)\\s*"
+        beginCaptures:
+          "0":
+            name: "comment"
+        contentName: "comment"
+        end: "^.*?-->\\s*$\\n?"
+        endCaptures:
+          "0":
+            name: "comment"
+      }
+      {
+        match: "<!--[\\s\\S]*?-->"
+        name: "comment"
+      }
+    ]
+scopeName: "source.madoko"

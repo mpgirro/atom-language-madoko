@@ -1,9 +1,8 @@
 {
   "name": "atom-language-madoko",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Madoko language support in Atom",
-  "keywords": [
-  ],
+  "keywords": [],
   "repository": {
     "type": "git",
     "url": "https://github.com/mpgirro/atom-language-madoko"
@@ -21,6 +20,5 @@
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

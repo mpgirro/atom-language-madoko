@@ -1,7 +1,7 @@
 {
   "name": "language-madoko",
   "version": "0.1.2",
-  "description": "Madoko language support in Atom",
+  "description": "Madoko language support for Atom",
   "keywords": [],
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
     "url": "https://github.com/mpgirro/atom-language-madoko/issues"
   },
   "homepage": "https://github.com/mpgirro/atom-language-madoko",
-  "readme": "# Madoko language support in Atom\n\nAdds syntax highlighting to Madoko files in Atom.",
+  "readme": "# Madoko language support for Atom\n\nAdds syntax highlighting for Madoko files to Atom.",
   "readmeFilename": "README.md",
   "author": {
     "name": "Maximilian Irro"
